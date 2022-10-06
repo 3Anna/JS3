@@ -1,0 +1,254 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>JS3</title>
+    <style> /*CSS*/
+        body {
+            font-family: -apple-system, system-ui, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+            font-size: 16px;
+            font-weight: 200;
+            line-height: 2;
+            background-color: #927474;
+            margin: 0;
+            padding: 0;
+        }
+        .open-button {
+            background-color: #ca7b7b;
+            color: white;
+            padding: 16px 20px;
+            border: none;
+            border-radius: 20px;
+            opacity: 0.8; /*прозрачность*/
+        }
+        .close-button {
+            background-color: #dbb0e6;
+            color: black;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 20px;
+            opacity: 0.8; 
+            margin: 0 auto;
+            display: block;
+        }
+        .send-button {
+            background-color: #bfe6b0;
+            color: black;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 20px;
+            opacity: 0.8; 
+            margin: 0 auto;
+            display: block;
+        }
+        .modal {
+            position: fixed;
+            top: 0;
+            right: 0;
+            bottom: 0;
+            left: 0;
+            background: rgba(0, 0, 0, 0.5);
+            z-index: 1050;
+            opacity: 0;
+        }
+        .form {
+            display: none;
+        }
+        .form-container{
+            display: block;
+            margin-left: auto;
+            margin-right: auto;
+            max-width: 70%;
+            padding: 10px;
+            border: none;
+            border-radius: 20px;
+            background-color: #e9e1eb;
+        }
+        .formBox{
+            padding: 2px;
+            margin: 30px;
+        }
+        .p_form{
+            display:inline-block;
+        }
+
+        .show {
+            opacity: 1;
+            pointer-events: auto;
+            overflow-y: auto;
+        }
+        input:invalid {
+            border-color: #e94e4e;
+            box-shadow: 0 0 5px 1px #e94e4e;
+        }
+    </style>
+</head>
+
+<body>
+    <h1>Сурова Анна 201-324 - ЛР №3</h1>
+    <button class="open-button" id="open" onclick="openForm()">Открыть форму</button>
+
+    <div class="form" id="myForm">
+        
+        <form action="" method="post" class="form-container" id="formId">
+            <h1>Вариант 4</h1>
+            <div class="formBox">
+                <label>Город <input type="text" id="city" required></label>
+            </div>
+            <div class="formBox">
+                <label>Дата <input type="date" id="date" required></label>
+            </div>
+            <div class="formBox">
+                <label>Количество билетов <input type="number" id="amount" min="1", max="50" required></label>
+            </div>
+            <div class="formBox">
+                <label>Направление 
+                    <input type="radio" name="check" id="checked_one" value="one"><p class="p_form">В одну сторону </p>
+                    <input type="radio" name="check" id="checked_two" value="two"><p class="p_form">В обе стороны </p>
+                </label>
+            </div>
+            <button type="submit" class="send-button" id="send">Отправить</button>
+            <button class="close-button" id="close" onclick="closeForm()">Закрыть</button>
+        </form>
+    </div>
+
+
+    <script>
+        function openForm() { //открытие формы
+            document.getElementById("myForm").style.display = "block"; //открывает форму
+            document.getElementById("open").style.display = "none"; //скрывает кнопку открытия
+            document.body.style.backgroundColor = '#708090';//меняет цвет фона
+            document.body.style.overflow='hidden';
+        }
+
+        function closeForm() {  //закрытие формы по кнопке
+            document.getElementById("myForm").style.display = "none";
+            document.getElementById("open").style.display = "block";
+            document.body.style.backgroundColor = '#927474';
+            document.body.style.overflow=' ';
+        }
+        
+        let modalForm = document.getElementById("myForm");
+        modalForm.onclick = function (event) {
+            if (event && event.target == modalForm) {
+                document.getElementById("myForm").style.display = "none";
+                document.getElementById("open").style.display = "block";
+                document.body.style.backgroundColor = '#927474';
+                document.body.style.overflow=' ';
+                return false;
+            }
+        };
+        
+
+        const city = document.getElementById("city"),
+        date=document.getElementById("date"),
+        amount = document.getElementById("amount"),
+        checked_one = document.getElementById("checked_one");
+        checked_two = document.getElementById("checked_two");
+
+        city.addEventListener('blur', function(event)
+        {
+            switch(true) {
+                case city.validity.valueMissing:
+                    city.setCustomValidity("Заполните поле!");
+                    break;
+                case city.validity.typeMismatch:
+                    city.setCustomValidity("Неправильный тип данных");
+                    break;
+                default: 
+                    city.setCustomValidity("");
+            }
+            city.reportValidity();
+        }
+        );
+
+        date.addEventListener('blur', function(event)
+        {
+            switch(true) {
+                case date.validity.valueMissing:
+                    date.setCustomValidity("Заполните поле!");
+                    break;
+                default: 
+                    date.setCustomValidity("");
+            }
+            date.reportValidity();
+        }
+        );
+
+        amount.addEventListener('blur', function()
+        {
+            switch(true) {
+                case amount.validity.valueMissing:
+                    amount.setCustomValidity("Заполните поле!");
+                    break;
+                case amount.validity.typeMismatch:
+                    amount.setCustomValidity("Неправильный тип данных");
+                    break;
+                case amount.validity.rangeUnderflow:
+                    amount.setCustomValidity("Неверное количество! Не менее 1!");
+                    break;
+                case amount.validity.rangeOverflow:
+                    amount.setCustomValidity("Количество слишком большое! Не более 50!");
+                    break;
+                default: 
+                    amount.setCustomValidity("");
+            }
+            amount.reportValidity();
+        }
+        );
+
+        checked_one.addEventListener('blur', function(event)
+        {
+            switch(true) {
+                case checked_one.validity.valueMissing:
+                    checked_one.setCustomValidity("Заполните поле!");
+                    break;
+                default: 
+                    checked_one.setCustomValidity("");
+            }
+            checked_one.reportValidity();
+        }
+        );
+        checked_two.addEventListener('blur', function(event)
+        {
+            switch(true) {
+                case checked_two.validity.valueMissing:
+                    checked_two.setCustomValidity("Заполните поле!");
+                    break;
+                default: 
+                    checked_two.setCustomValidity("");
+            }
+            checked_two.reportValidity();
+        }
+        );
+
+        const form = document.getElementById('formId');
+
+        form.addEventListener('submit', function (event) {
+            event.preventDefault();
+
+            if (document.getElementById("checked_one").checked)
+                check = document.getElementById("checked_one").value;
+            if (document.getElementById("checked_two").checked)
+                check = document.getElementById("checked_two").value;
+            if (document.getElementById("city").validity.valid
+                && document.getElementById("date").validity.valid
+                && document.getElementById("amount").validity.valid
+                && (document.getElementById("checked_one").validity.valid
+                    || document.getElementById("checked_two").validity.valid)) {
+
+                    const info = {
+                        city: city.value,
+                        date: date.value,
+                        amount: amount.value,
+                        check,
+                    }
+            console.table(info);
+            }
+        }
+        );
+
+    </script>
+</body>
